@@ -1,0 +1,39 @@
+<?php
+include '../conexion.php';
+
+try {
+
+    $statement = $mbd->prepare("INSERT INTO producto ( artista, album, idcom, fecha_entrada, fecha_salida, cantidad, precio, correo) 
+    VALUES (:artista, :album, :idcom, :fecha_entrada, :fecha_salida, :cantidad, :precio, :correo)");
+
+    $statement->bindParam(':artista', $artista);
+    $statement->bindParam(':album', $album);
+    $statement->bindParam(':idcom', $idcom);
+    $statement->bindParam(':fecha_entrada', $fecha_entrada);
+    $statement->bindParam(':fecha_salida', $fecha_salida);
+    $statement->bindParam(':cantidad', $cantidad);
+    $statement->bindParam(':precio', $precio);
+    $statement->bindParam(':correo', $correo);
+
+    $artista = $_POST['artista'];
+    $album = $_POST['album'];
+    $idcom = $_POST['idcom'];
+    $fecha_entrada = $_POST['fecha_entrada'];
+    $fecha_salida = $_POST['fecha_salida'];
+    $cantidad = $_POST['cantidad'];
+    $precio = $_POST['precio'];
+    $correo = $_POST['correo'];
+
+    $statement->execute();
+    $_POST['id'] = $mbd->lastInsertId(); 
+    header('Content-type:application/json;charset=utf-8');
+    echo json_encode($_POST);
+} catch (PDOException $e) {
+    header('Content-type:application/json;charset=utf-8');
+    echo json_encode([
+        'error' => [
+            'codigo' => $e->getCode(),
+            'mensaje' => $e->getMessage()
+        ]
+    ]);
+}
